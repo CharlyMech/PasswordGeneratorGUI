@@ -1,3 +1,4 @@
 src/__pycache__/
 src/db/__pycache__/
 .vscode
+src/db/data_base.db
