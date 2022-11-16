@@ -17,6 +17,10 @@ def main(page: Page):
     page.title = "Pysswords"
     page.vertical_alignment = "center"
 
+    """
+    - PASSWORD RANDOM GENERATION CONTENT -
+
+    """
     passwords_TITLE = Column(
         [
             Row(
@@ -40,42 +44,52 @@ def main(page: Page):
         text_align="center",
         width=75,
     )
-    passwords_PASSWD_GEN = Row(
-        [
-            TextField(
-                label="Random password",
-                prefix_icon=icons.PASSWORD,
-                read_only=True,
-                text_align="center",
-            )
-        ],
-        alignment="center",
+    passwords_PASSWD_GEN_TXT = TextField(
+        label="Random password",
+        # value="",
+        read_only=True,
+        text_align="center",
     )
 
-    def minus_click(e):
+    def minus_click_passwd(e):
         if (int(passwords_PASSWD_LARGE.value) - 1) >= 8:
             passwords_PASSWD_LARGE.value = int(passwords_PASSWD_LARGE.value) - 1
             page.update()
 
-    def plus_click(e):
+    def plus_click_passwd(e):
         if (int(passwords_PASSWD_LARGE.value) + 1) <= 64:
             passwords_PASSWD_LARGE.value = int(passwords_PASSWD_LARGE.value) + 1
             page.update()
 
+    def call_random_passwd(e):
+        passwords_PASSWD_GEN_TXT.value = random_passwd(
+            int(passwords_PASSWD_LARGE.value)
+        )
+        page.update()
+
     passwords_GEN_BTNS = Row(
         [
-            IconButton(icons.REMOVE, on_click=minus_click),
+            IconButton(icons.REMOVE, on_click=minus_click_passwd),
             passwords_PASSWD_LARGE,
-            IconButton(icons.ADD, on_click=plus_click),
-            FilledButton("Generate", icon=icons.PASSWORD, icon_color=colors.BLUE_300),
+            IconButton(icons.ADD, on_click=plus_click_passwd),
+            FilledButton(
+                "Generate",
+                icon=icons.PASSWORD,
+                on_click=call_random_passwd,
+                icon_color=colors.BLUE_300,
+            ),
         ],
         alignment="center",
     )
 
+    passwords_PASSWD_GEN = Row([passwords_PASSWD_GEN_TXT], alignment="center")
+
     passwords_SAVE_BTN = Row(
         [
             FilledButton(
-                "Save", icon=icons.DATA_SAVER_ON_OUTLINED, icon_color=colors.BLUE_300
+                "Save",
+                icon=icons.DATA_SAVER_ON_OUTLINED,
+                icon_color=colors.BLUE_300,
             )
         ],
         alignment="center",
@@ -89,9 +103,99 @@ def main(page: Page):
 
     passwd_MAIN_COL = Column(
         [passwords_TITLE, passwords_GEN],
-        spacing=100,
+        alignment="spaceEvenly",
+        spacing=80,
     )
     passwd_MAIN = Container(content=passwd_MAIN_COL)
+
+    """
+    - PIN RANDOM GENERATION CONTENT -
+        
+    """
+    pin_TITLE = Column(
+        [
+            Row(
+                [
+                    Text(
+                        value="Generate new Random Pin",
+                        size=30,
+                        text_align="center",
+                    )
+                ],
+                alignment="center",
+            )
+        ],
+        alignment="center",
+    )
+
+    pin_PIN_LARGE = TextField(
+        value="4",
+        border="underline",
+        disabled=True,
+        text_align="center",
+        width=75,
+    )
+    pin_PIN_GEN_TXT = TextField(
+        label="Random PIN",
+        # value="",
+        read_only=True,
+        text_align="center",
+    )
+
+    def minus_click_pin(e):
+        if (int(pin_PIN_LARGE.value) - 1) >= 4:
+            pin_PIN_LARGE.value = int(pin_PIN_LARGE.value) - 1
+            page.update()
+
+    def plus_click_pin(e):
+        if (int(pin_PIN_LARGE.value) + 1) <= 12:
+            pin_PIN_LARGE.value = int(pin_PIN_LARGE.value) + 1
+            page.update()
+
+    def call_random_pin(e):
+        pin_PIN_GEN_TXT.value = random_pin(int(pin_PIN_LARGE.value))
+        page.update()
+
+    pin_GEN_BTNS = Row(
+        [
+            IconButton(icons.REMOVE, on_click=minus_click_pin),
+            pin_PIN_LARGE,
+            IconButton(icons.ADD, on_click=plus_click_pin),
+            FilledButton(
+                "Generate",
+                icon=icons.PIN,
+                on_click=call_random_pin,
+                icon_color=colors.BLUE_300,
+            ),
+        ],
+        alignment="center",
+    )
+
+    pin_PASSWD_GEN = Row([pin_PIN_GEN_TXT], alignment="center")
+
+    pin_SAVE_BTN = Row(
+        [
+            FilledButton(
+                "Save",
+                icon=icons.DATA_SAVER_ON_OUTLINED,
+                icon_color=colors.BLUE_300,
+            )
+        ],
+        alignment="center",
+    )
+
+    pin_GEN = Column(
+        [pin_GEN_BTNS, pin_PASSWD_GEN, pin_SAVE_BTN],
+        alignment="center",
+        spacing=30,
+    )
+
+    pin_MAIN_COL = Column(
+        [pin_TITLE, pin_GEN],
+        alignment="spaceEvenly",
+        spacing=80,
+    )
+    pin_MAIN = Container(content=pin_MAIN_COL)
 
     t = Tabs(
         selected_index=0,
@@ -105,9 +209,10 @@ def main(page: Page):
                 ),
             ),
             Tab(
-                text="Random Pin",
+                text="Random PIN",
                 content=Container(
-                    content=Text("Random pin generation"), alignment=alignment.center
+                    content=pin_MAIN,
+                    alignment=alignment.center,
                 ),
             ),
             Tab(
